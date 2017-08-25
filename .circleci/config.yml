@@ -34,3 +34,20 @@ jobs:
           destination: tr1
       - store_test_results:
           path: test-reports/
+          
+      - deploy:
+          name:  Build docker image, and push to docker hub; deploy to cluster.
+          command:     |
+            export DOCKER_IMAGE="mgxyasserrabee/python-circleci-docker-k8s"
+            export SERVICE_NAME="python-circleci-docker-k8s"
+
+            set -v
+            # Get version info.
+            test -v CIRCLE_TAG && VERSION=$CIRCLE_TAG || VERSION=$CIRCLE_BRANCH
+            export IMAGE_TAG=$VERSION"_sha-"$CIRCLE_SHA1
+
+            # Build
+            docker build --rm=false -t "$DOCKER_IMAGE:$IMAGE_TAG" .
+            docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASS"
+            docker push "$DOCKER_IMAGE:$IMAGE_TAG"
+
