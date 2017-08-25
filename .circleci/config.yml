@@ -9,9 +9,9 @@ jobs:
       - checkout
       - setup_remote_docker
 
-      - add_ssh_keys:
-          fingerprints:
-            - "s"
+      - run:
+          command: |
+            ls
 
       - restore_cache:
           key: deps-{{ checksum "requirements.txt" }}
