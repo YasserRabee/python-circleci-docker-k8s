@@ -3,7 +3,7 @@ jobs:
   build:
     docker:
       - image: circleci/python:3.5
-    working_directory: /forecaster
+    working_directory: ~/forecaster
 
     steps:
       - checkout
