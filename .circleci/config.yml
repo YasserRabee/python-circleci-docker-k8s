@@ -9,9 +9,7 @@ jobs:
       - checkout
       - setup_remote_docker
 
-      - run:
-          command: |
-            ls
+      - run: echo $PWD
 
       - restore_cache:
           key: deps-{{ checksum "requirements.txt" }}
