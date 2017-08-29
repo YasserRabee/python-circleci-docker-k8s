@@ -60,6 +60,7 @@ jobs:
             docker build --rm=false -t "$DOCKER_IMAGE:$IMAGE_TAG" .
             docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASS"
             docker push "$DOCKER_IMAGE:$IMAGE_TAG"
+            docker history -q $DOCKER_IMAGE | grep missing -v
 
       - run:
           name: Save Docker image layer cache
