@@ -65,7 +65,8 @@ jobs:
           name: Save Docker image layer cache
           command: |
             mkdir -p ~/cache
-            docker save -o ~/cache/docker-cache.tar $DOCKER_IMAGE $(docker history -q $DOCKER_IMAGE | grep missing -v)
+            docker history -q $DOCKER_IMAGE | grep missing -v
+            docker save -o ~/cache/docker-cache.tar $DOCKER_IMAGE
       - save_cache:
           key: docker-v2-{{ epoch }}
           paths:
