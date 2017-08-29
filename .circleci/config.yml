@@ -35,7 +35,16 @@ jobs:
           destination: tr1
       - store_test_results:
           path: test-reports/
-          
+
+      - restore_cache:
+          key: docker-v2
+          paths:
+            - ~/cache/docker-cache.tar
+      - run:
+          name: Load Docker image layer cache
+          command: |
+            set +o pipefail
+            docker load -i ~/cache/docker-cache.tar | true
       - deploy:
           name:  Build docker image, and push to docker hub; deploy to cluster.
           command:     |
@@ -52,3 +61,12 @@ jobs:
             docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASS"
             docker push "$DOCKER_IMAGE:$IMAGE_TAG"
 
+      - run:
+          name: Save Docker image layer cache
+          command: |
+            mkdir -p ~/cache
+            docker save -o ~/cache/docker-cache.tar $DOCKER_IMAGE $(docker history -q $DOCKER_IMAGE | grep missing -v)
+      - save_cache:
+          key: docker-v2-{{ epoch }}
+          paths:
+            - ~/cache/docker-cache.tar
